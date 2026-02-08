@@ -1,14 +1,5 @@
-fastapi==0.128.0
 streamlit==1.29.0
-uvicorn==0.40.0
 ultralytics==8.4.10
 opencv-python==4.13.0.90
-numpy==1.26.4
 pillow==10.1.0
-requests==2.31.0
-python-multipart==0.0.22
-pydantic==2.10.1
-pydantic_core==2.18.1
-starlette==0.50.0 
-httptools==0.7.1 
-websockets==16.0
+numpy==1.26.4
