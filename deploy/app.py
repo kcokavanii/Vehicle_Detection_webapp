@@ -8,13 +8,22 @@ import io
 import base64
 import os
 from pathlib import Path
+import gdown
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-MODEL_PATHS = {
-    "yolov8n": os.path.join(current_dir, "models", "yolov8nano.pt"),
-    "yolov8m": os.path.join(current_dir, "models", "yolov8m.pt"),
+MODEL_URLS = {
+    "yolov8n": "https://drive.google.com/uc?id=1w7e8v7rIzap65SSA1eHoRsKosmjHSliy",
+    "yolov8m": "https://drive.google.com/uc?id=1j1bkbPgBeUr0LCnE_-c_s9xIYfH0Riic",
 }
+MODEL_FILES = {
+    "yolov8n": "yolov8nano.pt",
+    "yolov8m": "yolov8m.pt",
+}
+
+st.set_page_config(
+    page_title="Vehicle Detection System",
+    page_icon="🚗",
+    layout="wide"
+)
 
 st.set_page_config(
     page_title="Vehicle Detection System",
@@ -60,22 +69,33 @@ st.markdown('<p class="sub-header">Система детекции трансп�
 @st.cache_resource
 def load_models():
     models_dict = {}    
-    try:
-        for model_name, model_path in MODEL_PATHS.items():
-            if os.path.exists(model_path):
-                models_dict[model_name] = YOLO(model_path)
-            else:
-                # Если файл не найден, пробуем скачать предобученную
-                models_dict[model_name] = YOLO(model_name + ".pt")        
-        if not models_dict:
-            st.sidebar.error("Не удалось загрузить модели")        
-        return models_dict        
-    except Exception as e:
-        st.sidebar.error(f"Ошибка при загрузке моделей: {e}")
-        return {
-            "yolov8n": YOLO("yolov8n.pt"),
-            "yolov8m": YOLO("yolov8m.pt")
-        }
+    for model_name in MODEL_URLS.keys():
+        model_file = MODEL_FILES[model_name]
+        model_url = MODEL_URLS[model_name]
+        
+        if not os.path.exists(model_file):
+            with st.spinner(f"Скачиваю модель {model_name} с Google Drive..."):
+                try:
+                    gdown.download(model_url, model_file, quiet=False)
+                    st.sidebar.success(f"Модель {model_name} скачана")
+                except Exception as e:
+                    st.sidebar.error(f"Ошибка скачивания {model_name}: {e}")
+                    st.sidebar.info(f"Использую стандартную модель {model_name}")
+                    model_file = f"{model_name}.pt"
+        else:
+            st.sidebar.info(f"Модель {model_name} уже скачана, использую локальную копию")
+        
+        try:
+            models_dict[model_name] = YOLO(model_file)
+            st.sidebar.success(f"Модель {model_name} загружена в память")
+        except Exception as e:
+            st.sidebar.error(f"Ошибка загрузки {model_name}: {e}")
+            try:
+                models_dict[model_name] = YOLO(f"{model_name}.pt")
+                st.sidebar.info(f"Использую стандартную модель {model_name} как fallback")
+            except:
+                st.sidebar.error(f"Не удалось загрузить даже стандартную модель {model_name}")    
+    return models_dict
 
 with st.spinner("Загрузка моделей..."):
     models_dict = load_models()
@@ -430,3 +450,4 @@ st.markdown(
     unsafe_allow_html=True
 
 )
+
