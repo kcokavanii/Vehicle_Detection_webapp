@@ -11,8 +11,8 @@ from pathlib import Path
 import gdown
 
 MODEL_URLS = {
-    "yolov8n": "https://drive.google.com/uc?id=1w7e8v7rIzap65SSA1eHoRsKosmjHSliy",
-    "yolov8m": "https://drive.google.com/uc?id=1j1bkbPgBeUr0LCnE_-c_s9xIYfH0Riic",
+    "yolov8n": "https://drive.google.com/uc?id=1j1bkbPgBeUr0LCnE_-c_s9xIYfH0Riic",
+    "yolov8m": "https://drive.google.com/uc?id=1w7e8v7rIzap65SSA1eHoRsKosmjHSliy",
 }
 MODEL_FILES = {
     "yolov8n": "yolov8nano.pt",
@@ -74,20 +74,15 @@ def load_models():
         model_url = MODEL_URLS[model_name]
         
         if not os.path.exists(model_file):
-            with st.spinner(f"Скачиваю модель {model_name} с Google Drive..."):
-                try:
-                    gdown.download(model_url, model_file, quiet=False)
-                    st.sidebar.success(f"Модель {model_name} скачана")
-                except Exception as e:
-                    st.sidebar.error(f"Ошибка скачивания {model_name}: {e}")
-                    st.sidebar.info(f"Использую стандартную модель {model_name}")
-                    model_file = f"{model_name}.pt"
+            try:
+                gdown.download(model_url, model_file, quiet=False)
+            except Exception as e:
+                model_file = f"{model_name}.pt"
         else:
             st.sidebar.info(f"Модель {model_name} уже скачана, использую локальную копию")
         
         try:
             models_dict[model_name] = YOLO(model_file)
-            st.sidebar.success(f"Модель {model_name} загружена в память")
         except Exception as e:
             st.sidebar.error(f"Ошибка загрузки {model_name}: {e}")
             try:
@@ -450,4 +445,5 @@ st.markdown(
     unsafe_allow_html=True
 
 )
+
 
