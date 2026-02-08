@@ -1,7 +1,9 @@
 # Vehicle_Detection_webapp
 Computer Vision project. Vehicle detection in images. Complete ML pipeline with model tuning and web interface.
+##  Live Demo
+**[Try the live application here](https://vehicledetectionwebapp-yp3xudmd35mjkv9jwnbpts.streamlit.app/)**
 
-## Quick Start
+## Quick Start (for developers)
 
 ### Prerequisites
 
@@ -30,7 +32,9 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 #### 3. Install Dependencies
+**Install dependencies directly from the src folder!**
 ```bash
+cd src
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
