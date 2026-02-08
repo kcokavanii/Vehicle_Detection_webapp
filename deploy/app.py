@@ -9,9 +9,11 @@ import base64
 import os
 from pathlib import Path
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
 MODEL_PATHS = {
-    "yolov8n": "../src/models/yolov8nano.pt",
-    "yolov8m": "../src/models/yolov8m.pt",
+    "yolov8n": os.path.join(current_dir, "models", "yolov8nano.pt"),
+    "yolov8m": os.path.join(current_dir, "models", "yolov8m.pt"),
 }
 
 st.set_page_config(
@@ -426,4 +428,5 @@ st.markdown(
     "Vehicle Detection System | YOLOv8 + Streamlit | Версия: Облачная"
     "</div>",
     unsafe_allow_html=True
+
 )
